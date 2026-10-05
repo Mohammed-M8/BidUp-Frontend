@@ -9,7 +9,7 @@ const currentUser = async () => {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     }
-    const res = await fetch(`${BASE_URL}/current_user`, config);
+    const res = await fetch(`${BASE_URL}/users/me`, config);
 
     const data = await res.json();
 

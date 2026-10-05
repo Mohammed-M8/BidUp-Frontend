@@ -26,6 +26,7 @@ const SignInForm = () => {
     evt.preventDefault();
     try {
       const signedInUser = await signIn(formData);
+      console.log(signedInUser)
       setUser(signedInUser);
       navigate('/');
     } catch (err) {

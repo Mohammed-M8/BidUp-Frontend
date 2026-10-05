@@ -21,5 +21,15 @@ try {
 }
 }
 
+const getUserAuctions=async (user_id)=>{
+  try {
+    const response=await api.get(`/users/${user_id}/auctions`)
+    const data=response.data
+    return data
+  } catch (error) {
+    throw new Error(error,{cause:error})
+  }
+}
 
-export {getAuctions}
+
+export {getAuctions,getUserAuctions}
