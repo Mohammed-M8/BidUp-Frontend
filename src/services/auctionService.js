@@ -36,5 +36,15 @@ const getUserAuctions=async (user_id,page=1,page_size=10)=>{
   }
 }
 
+const getAuction=async(auction_id)=>{
+  try {
+    const response=await api.get(`${AUCTION_URL}/${auction_id}`)
+    const data=response.data
+    return data
+  } catch (error) {
+    throw new Error(error,{cause:error})
+  }
+}
 
-export {getAuctions,getUserAuctions}
+
+export {getAuctions,getUserAuctions,getAuction}

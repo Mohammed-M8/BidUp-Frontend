@@ -10,6 +10,7 @@ import Landing from './components/Landing/Landing'
 
 // Context
 import { UserContext } from './contexts/UserContext';
+import Auction from './components/Auction/Auction';
 
 const App = () => {
   const { user } = useContext(UserContext)
@@ -17,11 +18,22 @@ const App = () => {
   return (
     <>
       <NavBar />
-      <Routes>
-        <Route path='/' element={user ? <Dashboard /> : <Landing/> } />
-        <Route path='/sign-up' element={<SignUpForm />} />
-        <Route path='/sign-in' element={<SignInForm />} />
-      </Routes>
+      {user ?
+        <Routes>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='my'>
+
+          </Route>
+          <Route path='auctions'>
+            <Route index />
+            <Route path=':auctionId' element={<Auction />} />
+          </Route>
+        </Routes>
+        : <Routes>
+          <Route path='/' element={<Landing />} />
+          <Route path='/sign-up' element={<SignUpForm />} />
+          <Route path='/sign-in' element={<SignInForm />} />
+        </Routes>}
     </>
   );
 };

@@ -35,7 +35,6 @@ const Dashboard = () => {
       try {
         const data = await AuctionsService.getUserAuctions(user.sub, 1, 10)
         setAuctions(data)
-        console.log(data)
       } catch (error) {
         toast.error(error.message)
       }
