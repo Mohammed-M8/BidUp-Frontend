@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { getAuctions } from '@/services/auctionService'; // adjust to where getAuctions lives
+import { getAuctions } from '@/services/auctionService';
 import { UserContext } from '../../contexts/UserContext';
 
 const timeLeft = (endDate) => {
@@ -78,11 +78,10 @@ const LandingPage = () => {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-      {/* Welcome */}
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-3xl">
-            {user ? `Welcome back, ${user.username}` : 'Welcome to CarBid'}
+            {user ? `Welcome back, ${user.username}` : 'Welcome to BidUp'}
           </CardTitle>
           <CardDescription>
             Bid on live auctions, or list your own and watch the price climb in real time.
@@ -90,27 +89,32 @@ const LandingPage = () => {
         </CardHeader>
       </Card>
 
-      {/* Sign in / Sign up (guests only) */}
       {!user && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader>
               <CardTitle>Sign In</CardTitle>
-              <CardDescription>Already have an account? Pick up where you left off.</CardDescription>
+              <CardDescription>
+                Already have an account? Pick up where you left off.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button asChild variant="outline" className="w-full">
+
+            <CardContent className="mt-auto">
+              <Button variant='secondary' asChild className="w-full">
                 <Link to="/sign-in">Sign In</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader>
               <CardTitle>Sign Up</CardTitle>
-              <CardDescription>New here? Create an account to start bidding.</CardDescription>
+              <CardDescription>
+                New here? Create an account to start bidding.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+
+            <CardContent className="mt-auto">
               <Button asChild className="w-full">
                 <Link to="/sign-up">Sign Up</Link>
               </Button>
@@ -119,7 +123,6 @@ const LandingPage = () => {
         </div>
       )}
 
-      {/* Live auctions */}
       <Card>
         <CardHeader>
           <CardTitle>Live Auctions</CardTitle>
