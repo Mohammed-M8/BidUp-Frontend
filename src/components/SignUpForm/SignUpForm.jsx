@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 // Services
 import * as authService from '../../services/authService';
@@ -43,7 +43,16 @@ const SignUpForm = () => {
   };
 
   return (
-    <main className="flex justify-center px-4 py-12">
+    <main className="flex flex-col items-center gap-6 px-4 py-12">
+      <h1 className="text-center text-4xl">
+        Welcome to BidUp
+      </h1>
+      <p className="flex items-center justify-center gap-2 text-center text-2xl">
+        Already a User?
+        <Button variant="outline" asChild>
+          <Link to="/sign-in">Sign in</Link>
+        </Button>
+      </p>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>

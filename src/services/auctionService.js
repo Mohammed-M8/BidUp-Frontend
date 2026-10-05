@@ -21,9 +21,14 @@ try {
 }
 }
 
-const getUserAuctions=async (user_id)=>{
+const getUserAuctions=async (user_id,page=1,page_size=10)=>{
   try {
-    const response=await api.get(`/users/${user_id}/auctions`)
+    const response=await api.get(`/users/${user_id}/auctions`,{
+      params:{
+        page:page,
+        page_size:page_size
+      }
+    })
     const data=response.data
     return data
   } catch (error) {

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,7 +35,16 @@ const SignInForm = () => {
   };
 
   return (
-    <main className="flex justify-center px-4 py-12">
+    <main className="flex flex-col items-center gap-6 px-4 py-12">
+      <h1 className="text-center text-4xl">
+        Welcome back!
+      </h1>
+      <p className="flex items-center justify-center gap-2 text-center text-2xl">
+        New user? Go to
+        <Button variant="outline" asChild>
+          <Link to="/sign-up">Sign up</Link>
+        </Button>
+      </p>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sign In</CardTitle>
