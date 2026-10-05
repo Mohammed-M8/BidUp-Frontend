@@ -17,7 +17,7 @@ const NavBar = () => {
 
   return (
     <header className="border-b bg-background">
-      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+      <nav className="flex h-14 items-center justify-between px-4">
         <Link to="/" className="text-lg font-semibold">
           BidUp
         </Link>
