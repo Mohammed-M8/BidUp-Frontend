@@ -5,7 +5,7 @@ import { parseToken, registerToken } from "../lib/helpers/jwt-helpers";
 // Use the `VITE_BACK_END_SERVER_URL` environment variable to set the base URL.
 // Note the `/auth` path added to the server URL that forms the base URL for
 // all the requests in this service.
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/auth`;
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/auth`;
 
 const signUp = async (formData) => {
   try {

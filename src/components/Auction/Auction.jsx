@@ -5,10 +5,15 @@ import * as AuctionService from "../../services/auctionService";
 import { Spinner } from "../ui/spinner";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
+import { useAuctionSocket } from "../../../hooks/useAuctionSocket";
+import { BidForm } from "../BidForm/BidForm";
+import { createBid } from "@/services/bidService";
 
 export default function Auction() {
     const { auctionId } = useParams();
     const [auction, setAuction] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false)
+
 
     useEffect(() => {
         async function getAuction() {
@@ -23,16 +28,36 @@ export default function Auction() {
         getAuction();
     }, [auctionId]);
 
-    useEffect(() => {
-        async function connectWebsocket() {
- 
+    useAuctionSocket(auctionId, (message) => {
+        if (message.type === "connected") {
+            console.log("WebSocket connected");
+            return;
         }
-        connectWebsocket
-    }, [])
+
+        if (message.type === "new_bid") {
+            setAuction((prev) => {
+                if (!prev) return prev;
+                if (message.ended) toast.info("Auction has ended!")
+                return {
+                    ...prev,
+                    current_price: message.price,
+                    status: message.ended ? "ENDED" : prev.status,
+                };
+            });
+        }
+    });
+
 
     if (!auction) {
         return <Spinner className="mx-auto mt-20 size-8" />;
     }
+
+    const placeBid = async (price) =>{ 
+
+     await createBid(auction.id, price)
+    }
+
+    const ended = auction.status === "ended" || auction.status === "cancelled"
 
     return (
         <main className="px-4 py-4">
@@ -113,21 +138,22 @@ export default function Auction() {
                                 </div>
                             </div>
 
-                            <div className="mt-auto flex gap-3">
-                                <Button className="flex-1">
+                            {!ended && <div className="mt-auto flex gap-3">
+                                <Button className="flex-1" onClick={() => setDialogOpen(true)}>
                                     Place Bid
                                 </Button>
 
                                 <Button variant="outline" className="flex-1">
                                     Buy Now
                                 </Button>
-                            </div>
+                            </div>}
 
                         </CardContent>
                     </Card>
 
                 </CardContent>
             </Card>
+            <BidForm open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price} />
         </main>
     );
 }
