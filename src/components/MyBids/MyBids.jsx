@@ -1,40 +1,31 @@
 import { UserContext } from "@/contexts/UserContext"
 import { getApiError } from "@/lib/helpers/getApiError"
-import { createAuction, getUserAuctions } from "@/services/auctionService"
+import { getUserBids } from "@/services/bidService"
 import { useContext, useEffect, useState } from "react"
-import { useSearchParams } from "react-router"
 import { toast } from "react-toastify"
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "../ui/pagination"
 import { Spinner } from "../ui/spinner"
 import ComponentScroller from "../ComponentScroller/ComponentScroller"
-import AuctionBar from "../AuctionBar/AuctionBar"
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "../ui/pagination"
+import BidBar from "../BidBar/BidBar"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Button } from "../ui/button"
-import { AuctionForm } from "../AuctionForm/AuctionForm"
+import { useSearchParams } from "react-router"
 
-export default function MyAuctions() {
+export default function MyBids() {
     const { user } = useContext(UserContext)
-    const [searchParams, setSearchParams] = useSearchParams()
-    const status = searchParams.get("status")
-    const [auctions, setAuctions] = useState([])
+    const [bids, setBids] = useState([])
     const [page, setPage] = useState(1)
     const [pages, setPages] = useState(0)
     const [loading, setLoading] = useState(true)
-    const [createOpen, setCreateOpen] = useState(false)
-    const [refresh, setRefresh] = useState(0)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const status = searchParams.get("status")
 
-    const items = [
-        { label: 'All', value: '' },
-        { label: "Active", value: 'active' },
-        { label: "Cancelled", value: 'cancelled' },
-        { label: "Ended", value: 'ended' }
-    ]
     useEffect(() => {
+
         const getData = async () => {
             setLoading(true)
             try {
-                const data = await getUserAuctions(user.sub, page, 12, status)
-                setAuctions(data.items)
+                const data = await getUserBids(user.sub, page, 12,status)
+                setBids(data.items)
                 setPages(data.pages)
             } catch (error) {
                 toast.error(getApiError(error))
@@ -42,26 +33,23 @@ export default function MyAuctions() {
                 setLoading(false)
             }
         }
-
         getData()
-
-    }, [page, status, user, refresh])
-
-    const handleCreate = async (formData) => {
-        await createAuction(formData)
-        toast.success("Auction created")
-        setRefresh((r) => r + 1)
-    }
+    }, [user, page,status])
 
     const goTo = (evt, target) => {
         evt.preventDefault()
         if (target >= 1 && target <= pages) setPage(target)
     }
+    const items = [
+        { label: "All Bids", value: '' },
+        { label: "Won", value: "won" },
+        { label: "Lost", value: "lost" }
+    ]
 
     return (
         <main className="space-y-4 px-4 py-4">
             <div className="flex flex-row items-center gap-4">
-                <h1 className="text-3xl">Your Auctions</h1>
+                <h1 className="text-3xl">Your Bids</h1>
 
                 <Select
                     value={status || ""}
@@ -84,17 +72,18 @@ export default function MyAuctions() {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <Button className="ml-auto" onClick={() => setCreateOpen(true)}>
-                    Create auction
-                </Button>
             </div>
             {loading ? (
                 <Spinner className="mx-auto mt-20 size-8" />
-            ) : auctions.length === 0 ? (
-                <p className="py-12 text-center text-muted-foreground">No auctions found.</p>
+            ) : bids.length === 0 ? (
+                <p className="py-12 text-center text-muted-foreground">No Bids found.</p>
             ) : (
                 <ComponentScroller orientation="vertical">
-                    {auctions.map((a) => <AuctionBar key={a.id} auction={a} />)}
+                    <div className="space-y-2">
+                        {bids.map((b) => (
+                            <BidBar key={b.id} bid={b} />
+                        ))}
+                    </div>
                 </ComponentScroller>
             )}
 
@@ -124,9 +113,7 @@ export default function MyAuctions() {
                 </Pagination>
 
             )}
-            <AuctionForm open={createOpen} onOpenChange={setCreateOpen} onSubmit={handleCreate} />
 
         </main>
-
     )
 }

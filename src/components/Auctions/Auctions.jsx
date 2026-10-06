@@ -59,7 +59,7 @@ export default function Auctions() {
 
     return (
         <main className="space-y-4 px-4 py-4">
-            <h1 className="text-5xl">Search Auctions</h1>
+            <h1 className="text-3xl">Search Auctions</h1>
 
             <form onSubmit={handleSearch}>
                 <Field className="my-2" orientation="horizontal">

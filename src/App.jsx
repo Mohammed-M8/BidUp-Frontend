@@ -13,6 +13,7 @@ import { UserContext } from './contexts/UserContext';
 import Auction from './components/Auction/Auction';
 import Auctions from './components/Auctions/Auctions';
 import MyAuctions from './components/MyAuctions/MyAuctions';
+import MyBids from './components/MyBids/MyBids';
 
 const App = () => {
   const { user } = useContext(UserContext)
@@ -25,7 +26,7 @@ const App = () => {
           <Route path='/' element={<Dashboard />} />
           <Route path='my'>
             <Route path='auctions' element={<MyAuctions />} />
-            <Route path='bids'/>
+            <Route path='bids' element={<MyBids/>}/>
           </Route>
           <Route path='auctions'>
             <Route index element={<Auctions />} />

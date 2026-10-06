@@ -59,10 +59,10 @@ const Dashboard = () => {
   }, [user])
 
   return (
-    <main className="space-y-4 px-4 py-12">
-      <h1 className='text-5xl'>Hello, {user.username}</h1>
+    <main className="space-y-4 px-4 py-4">
+      <h1 className='text-3xl'>Dashboard</h1>
       <Separator />
-      <h1 className="text-3xl">Your Auctions</h1>
+      <h1 className="text-2xl">Your Auctions</h1>
       <Card className="min-w-0">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardDescription>View your auctions</CardDescription>
@@ -80,7 +80,7 @@ const Dashboard = () => {
         </CardContent>
       </Card>
       <Separator />
-      <h1 className="text-3xl">Your Bids</h1>
+      <h1 className="text-2xl">Your Bids</h1>
       <Card className="min-w-0">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardDescription>View your bids</CardDescription>

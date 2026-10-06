@@ -18,7 +18,7 @@ const NavBar = () => {
   return (
     <header className="border-b bg-background">
       <nav className="flex h-14 items-center justify-between px-4">
-        <Link to="/" className="text-lg font-semibold">
+        <Link to="/" className="text-4xl font-[Geo] font-semibold">
           BidUp
         </Link>
 
@@ -32,6 +32,8 @@ const NavBar = () => {
                 Dashboard
               </Link>
               <Link to="/auctions" className={buttonVariants({ variant: 'ghost' })}>Auctions</Link>
+              <Link to="/my/auctions" className={buttonVariants({ variant: 'ghost' })}>My Auctions</Link>
+              <Link to="/my/bids" className={buttonVariants({ variant: 'ghost' })}>My Bids</Link>
               <Button variant="outline" onClick={handleSignOut}>
                 Sign Out
               </Button>

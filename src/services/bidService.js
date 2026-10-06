@@ -1,10 +1,11 @@
 import api from "@/api/axios";
 
-const getUserBids = async (user_id, page = 1, page_size = 10) => {
+const getUserBids = async (user_id, page = 1, page_size = 10,status=null) => {
   const response = await api.get(`/users/${user_id}/bids`, {
     params: {
       page: page,
-      page_size: page_size
+      page_size: page_size,
+      status:status||undefined
     }
   })
   const data = response.data
