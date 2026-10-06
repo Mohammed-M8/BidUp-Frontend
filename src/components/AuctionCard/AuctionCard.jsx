@@ -7,7 +7,7 @@ const AuctionCard = ({ auction }) => (
       <img
         src={auction.image_url}
         alt={auction.product_name}
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-contain"
       />
 
       <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-white/80 to-transparent p-2 pt-8 text-black">

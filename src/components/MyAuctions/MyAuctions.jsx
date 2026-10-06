@@ -1,6 +1,6 @@
 import { UserContext } from "@/contexts/UserContext"
 import { getApiError } from "@/lib/helpers/getApiError"
-import { getUserAuctions } from "@/services/auctionService"
+import { createAuction, getUserAuctions } from "@/services/auctionService"
 import { useContext, useEffect, useState } from "react"
 import { useSearchParams } from "react-router"
 import { toast } from "react-toastify"
@@ -9,6 +9,8 @@ import ComponentScroller from "../ComponentScroller/ComponentScroller"
 import AuctionBar from "../AuctionBar/AuctionBar"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "../ui/pagination"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Button } from "../ui/button"
+import { AuctionForm } from "../AuctionForm/AuctionForm"
 
 export default function MyAuctions() {
     const { user } = useContext(UserContext)
@@ -18,6 +20,9 @@ export default function MyAuctions() {
     const [page, setPage] = useState(1)
     const [pages, setPages] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [createOpen, setCreateOpen] = useState(false)
+    const [refresh, setRefresh] = useState(0)
+
     const items = [
         { label: 'All', value: '' },
         { label: "Active", value: 'active' },
@@ -40,7 +45,13 @@ export default function MyAuctions() {
 
         getData()
 
-    }, [page, status, user])
+    }, [page, status, user, refresh])
+
+    const handleCreate = async (formData) => {
+        await createAuction(formData)
+        toast.success("Auction created")
+        setRefresh((r) => r + 1)
+    }
 
     const goTo = (evt, target) => {
         evt.preventDefault()
@@ -73,6 +84,9 @@ export default function MyAuctions() {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                <Button className="ml-auto" onClick={() => setCreateOpen(true)}>
+                    Create auction
+                </Button>
             </div>
             {loading ? (
                 <Spinner className="mx-auto mt-20 size-8" />
@@ -108,7 +122,9 @@ export default function MyAuctions() {
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
+
             )}
+            <AuctionForm open={createOpen} onOpenChange={setCreateOpen} onSubmit={handleCreate} />
 
         </main>
 

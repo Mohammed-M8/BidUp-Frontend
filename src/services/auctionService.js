@@ -41,6 +41,19 @@ const cancelAuction = async (auction_id, reason) => {
   return data
 
 }
+const createAuction = async (formData) => {
+  const response = await api.post(AUCTION_URL, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  return response.data
+}
+
+const updateAuction = async (auctionId, formData) => {
+  const response = await api.put(`${AUCTION_URL}/${auctionId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  return response.data
+}
 
 
-export { getAuctions, getUserAuctions, getAuction, cancelAuction }
+export { getAuctions, getUserAuctions, getAuction, cancelAuction,createAuction,updateAuction }

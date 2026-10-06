@@ -15,6 +15,7 @@ import { UserContext } from "@/contexts/UserContext";
 import { AcceptForm } from "../AcceptForm/AcceptForm";
 import { CancelForm } from "../CancelForm/CancelForm";
 import { getApiError } from "@/lib/helpers/getApiError";
+import { EditAuctionForm } from "../EditAuctionForm/EditAuctionForm";
 
 export default function Auction() {
 
@@ -23,6 +24,7 @@ export default function Auction() {
     const [auction, setAuction] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false)
     const [cancelOpen, setCancelOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
     const [bidToAccept, setBidToAccept] = useState(null)
     const [buyNow, setBuyNow] = useState(false)
     const [bids, setBids] = useState([])
@@ -116,6 +118,12 @@ export default function Auction() {
         }
     }
 
+    const handleUpdate = async (formData) => {
+        const updated = await AuctionService.updateAuction(auction.id, formData)
+        setAuction(updated)
+        toast.success("Auction updated")
+    }
+
     const ended = auction.status === "ended" || auction.status === "cancelled"
 
     return (
@@ -206,14 +214,17 @@ export default function Auction() {
                                     Buy Now
                                 </Button>
                             </div> : isSeller && !ended ? (
-                                <Button
-                                    variant="destructive"
-                                    onClick={() => setCancelOpen(true)}
-                                >
-                                    Cancel Auction
-                                </Button>
+                                <div className="mt-auto flex gap-3">
+                                    {bids.length === 0 && (
+                                        <Button variant="secondary" className="flex-1" onClick={() => setEditOpen(true)}>
+                                            Edit Auction
+                                        </Button>
+                                    )}
+                                    <Button variant="destructive" className="flex-1" onClick={() => setCancelOpen(true)}>
+                                        Cancel Auction
+                                    </Button>
+                                </div>
                             ) : null}
-
                         </CardContent>
                     </Card>
 
@@ -244,7 +255,18 @@ export default function Auction() {
                 bid={bidToAccept}
                 onConfirm={acceptBid}
             />
-            <CancelForm open={cancelOpen} onOpenChange={setCancelOpen} onConfirm={handleCancel} />
+            {isSeller && (<>
+                <CancelForm open={cancelOpen} onOpenChange={setCancelOpen} onConfirm={handleCancel} />
+
+                <EditAuctionForm
+                    key={auction.id + String(editOpen)}
+                    open={editOpen}
+                    onOpenChange={setEditOpen}
+                    auction={auction}
+                    onSubmit={handleUpdate}
+                />
+            </>
+            )}
         </main>
     );
 }

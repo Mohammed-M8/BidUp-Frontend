@@ -20,7 +20,7 @@ const BidCard = ({ bid }) => {
         <img
           src={auction.image_url}
           alt={auction.product_name}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain"
         />
 
         <Badge
