@@ -74,7 +74,15 @@ export default function Auctions() {
                         type="search"
                         placeholder="Search..."
                         value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value
+                            setSearchInput(value)
+
+                            if (value === "") {
+                                setSearch("")
+                                setPage(1)
+                            }
+                        }}
                     />
                     <Button type="submit">Search</Button>
                 </Field>

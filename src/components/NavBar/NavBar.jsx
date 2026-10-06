@@ -1,12 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { UserContext } from '../../contexts/UserContext';
 import { removeToken } from '../../lib/helpers/jwt-helpers';
+import { getCategories } from '@/services/categoryService';
+import AuctionMenu from '../AuctionMenu/AuctionMenu';
 
 const NavBar = () => {
   const { user, setUser } = useContext(UserContext);
+  const [categories, setCategories] = useState([])
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -14,6 +17,14 @@ const NavBar = () => {
     setUser(null);
     navigate('/');
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getCategories()
+      setCategories(data)
+    }
+    getData()
+  }, [])
 
   return (
     <header className="border-b bg-background">
@@ -25,15 +36,16 @@ const NavBar = () => {
         <div className="flex items-center gap-2">
           {user ? (
             <>
-              <span className="mr-2 text-sm text-muted-foreground">
-                Hello, {user.username}
-              </span>
+
               <Link to="/" className={buttonVariants({ variant: 'ghost' })}>
                 Dashboard
               </Link>
-              <Link to="/auctions" className={buttonVariants({ variant: 'ghost' })}>Auctions</Link>
+              <AuctionMenu categories={categories} />
               <Link to="/my/auctions" className={buttonVariants({ variant: 'ghost' })}>My Auctions</Link>
               <Link to="/my/bids" className={buttonVariants({ variant: 'ghost' })}>My Bids</Link>
+              <span className="mr-2 text-sm text-muted-foreground">
+                Hello, {user.username}
+              </span>
               <Button variant="outline" onClick={handleSignOut}>
                 Sign Out
               </Button>

@@ -52,7 +52,7 @@ export default function BidBar({ bid, isTop, onAccept }) {
 
                         {bid.status && (
                             <Badge
-                                variant={bid.status === "won" ? "default" : "secondary"}
+                                variant={bid.status === "won" ? "success" : "destructive"}
                                 className="capitalize"
                             >
                                 {bid.status}
