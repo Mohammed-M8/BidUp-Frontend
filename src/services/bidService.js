@@ -21,5 +21,12 @@ const createBid = async (auction_id, price) => {
   return data
 }
 
+const getAuctionBids = async (auction_id) => {
+  const response = await api.get(`/auctions/${auction_id}/bids`)
+  const data = response.data
 
-export { getUserBids, createBid }
+  return data
+}
+
+
+export { getUserBids, createBid, getAuctionBids }

@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import * as AuctionService from "../../services/auctionService";
+import * as BidService from "../../services/bidService";
 import { Spinner } from "../ui/spinner";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { useAuctionSocket } from "../../../hooks/useAuctionSocket";
 import { BidForm } from "../BidForm/BidForm";
 import { createBid } from "@/services/bidService";
+import ComponentScroller from "../ComponentScroller/ComponentScroller";
+import BidBar from "../BidBar/BidBar";
 
 export default function Auction() {
     const { auctionId } = useParams();
     const [auction, setAuction] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false)
     const [buyNow, setBuyNow] = useState(false)
+    const [bids, setBids] = useState([])
 
     useEffect(() => {
         async function getAuction() {
@@ -28,9 +32,29 @@ export default function Auction() {
         getAuction();
     }, [auctionId]);
 
+    useEffect(() => {
+        const getBids = async () => {
+            try {
+                const data = await BidService.getAuctionBids(auctionId)
+                setBids(data.items)
+            } catch (error) {
+                toast.error(error.message)
+            }
+        }
+        getBids()
+    }, [auctionId])
+
+
+
     useAuctionSocket(auctionId, (message) => {
         if (message.type === "new_bid") {
             if (message.ended) toast.info("Auction has ended!")
+
+            setBids((prev) => [
+                { id: message.bid_id, price: message.price, bidder: message.bidder },
+                ...prev,
+            ])
+
             setAuction((prev) => prev && {
                 ...prev,
                 current_price: message.price,
@@ -151,8 +175,21 @@ export default function Auction() {
 
                 </CardContent>
             </Card>
-            <BidForm key={buyNow?"buyNow":"bidPrice"} open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price}     buyNowPrice={buyNow ? auction.buy_now_price : undefined}
- />
+            <section className="mx-auto mt-6 max-w-6xl space-y-3">
+                <h2 className="text-xl font-semibold">Bids ({bids.length})</h2>
+
+                {bids.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No bids yet.</p>
+                ) : (
+                    <ComponentScroller orientation="vertical">
+                        {bids.map((bid, i) => (
+                            <BidBar key={bid.id} bid={bid} isTop={i === 0} />
+                        ))}
+                    </ComponentScroller>
+                )}
+            </section>
+            <BidForm key={buyNow ? "buyNow" : "bidPrice"} open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price} buyNowPrice={buyNow ? auction.buy_now_price : undefined}
+            />
         </main>
     );
 }
