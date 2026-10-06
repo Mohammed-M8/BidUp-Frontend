@@ -14,9 +14,8 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { toast } from "react-toastify"
 
-export function BidForm({ open, onOpenChange, onSubmit, minPrice }) {
-
-    const [price, setPrice] = useState()
+export function BidForm({ open, onOpenChange, onSubmit, minPrice, buyNowPrice }) {
+    const [price, setPrice] = useState(buyNowPrice ?? "")
 
     const handleSubmit = async (evt) => {
         evt.preventDefault()
@@ -34,7 +33,7 @@ export function BidForm({ open, onOpenChange, onSubmit, minPrice }) {
             <DialogContent className="sm:max-w-sm">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                        <DialogTitle>Place Bid</DialogTitle>
+                        <DialogTitle>{buyNowPrice ? "Buy Now" : "Place Bid"}</DialogTitle>
                         <DialogDescription>
                             Input a price to place a bid on the auction (more than {minPrice})
                         </DialogDescription>
@@ -48,13 +47,14 @@ export function BidForm({ open, onOpenChange, onSubmit, minPrice }) {
                             step="0.01"
                             min={minPrice}
                             value={price}
+                            readonly={buyNowPrice}
                             onChange={(e) => setPrice(e.target.value)}
                             required
                         />
                     </Field>
                     <DialogFooter>
                         <DialogClose render={<Button variant="outline">Cancel</Button>} />
-                        <Button type="submit" >Place Bid</Button>
+                        <Button type="submit">{buyNowPrice ? "Buy Now" : "Place Bid"}</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

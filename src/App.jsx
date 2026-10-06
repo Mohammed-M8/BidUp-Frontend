@@ -11,6 +11,7 @@ import Landing from './components/Landing/Landing'
 // Context
 import { UserContext } from './contexts/UserContext';
 import Auction from './components/Auction/Auction';
+import Auctions from './components/Auctions/Auctions';
 
 const App = () => {
   const { user } = useContext(UserContext)
@@ -25,7 +26,7 @@ const App = () => {
 
           </Route>
           <Route path='auctions'>
-            <Route index />
+            <Route index element={<Auctions />} />
             <Route path=':auctionId' element={<Auction />} />
           </Route>
         </Routes>

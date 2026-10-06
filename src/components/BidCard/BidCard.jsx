@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
-import { Card, CardContent } from "../ui/card";
+import { Card } from "../ui/card";
 
 const BADGES = {
   leading:   { label: "Leading",   className: "bg-green-600 text-white hover:bg-green-600" },
@@ -16,31 +16,25 @@ const BidCard = ({ bid }) => {
 
   return (
     <Link to={`/auctions/${auction.id}`} className="shrink-0">
-      <Card className="w-48 min-w-48 gap-0 overflow-hidden py-0">
-        <div className="relative">
-          <img
-            src={auction.image_url}
-            alt={auction.product_name}
-            className="aspect-square w-full object-cover"
-          />
-          <Badge
-            variant={badge.variant}
-            className={`absolute left-2 top-2 ${badge.className ?? ""}`}
-          >
-            {badge.label}
-          </Badge>
+      <Card className="relative aspect-square w-36 gap-0 overflow-hidden py-0 sm:w-40">
+        <img
+          src={auction.image_url}
+          alt={auction.product_name}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        <Badge
+          variant={badge.variant}
+          className={`absolute left-2 top-2 ${badge.className ?? ""}`}
+        >
+          {badge.label}
+        </Badge>
+
+        <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-white/90 via-white/70 to-transparent p-2 pt-10 text-black">
+          <h3 className="truncate text-sm font-medium">{auction.product_name}</h3>
+          <p className="text-sm font-semibold">Your bid: BD {bid.price}</p>
+          <p className="text-xs text-black/60">Current: BD {auction.current_price}</p>
         </div>
-
-        <CardContent className="p-3">
-          <h3 className="truncate font-medium">{auction.product_name}</h3>
-
-          <p className="text-sm text-muted-foreground">Your bid</p>
-          <p className="font-semibold">BD {bid.price}</p>
-
-          <p className="mt-1 text-xs text-muted-foreground">
-            Current: BD {auction.current_price}
-          </p>
-        </CardContent>
       </Card>
     </Link>
   );

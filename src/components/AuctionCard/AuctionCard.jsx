@@ -10,7 +10,6 @@ const AuctionCard = ({ auction }) => (
         className="absolute inset-0 h-full w-full object-cover"
       />
 
-      {/* gradient so the text stays readable on any image */}
       <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-white/80 to-transparent p-2 pt-8 text-black">
         <h3 className="truncate text-sm font-medium">{auction.product_name}</h3>
         <p className="text-sm font-semibold">BD {auction.current_price}</p>

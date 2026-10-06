@@ -13,7 +13,7 @@ export default function Auction() {
     const { auctionId } = useParams();
     const [auction, setAuction] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false)
-
+    const [buyNow, setBuyNow] = useState(false)
 
     useEffect(() => {
         async function getAuction() {
@@ -29,32 +29,30 @@ export default function Auction() {
     }, [auctionId]);
 
     useAuctionSocket(auctionId, (message) => {
-        if (message.type === "connected") {
-            console.log("WebSocket connected");
-            return;
-        }
-
         if (message.type === "new_bid") {
-            setAuction((prev) => {
-                if (!prev) return prev;
-                if (message.ended) toast.info("Auction has ended!")
-                return {
-                    ...prev,
-                    current_price: message.price,
-                    status: message.ended ? "ENDED" : prev.status,
-                };
-            });
+            if (message.ended) toast.info("Auction has ended!")
+            setAuction((prev) => prev && {
+                ...prev,
+                current_price: message.price,
+                status: message.ended ? "ended" : prev.status,
+            })
+        } else if (message.type === "auction_ended") {
+            toast.info("Auction has ended!")
+            setAuction((prev) => prev && { ...prev, status: "ended" })
+        } else if (message.type === "auction_cancelled") {
+            toast.error("The seller cancelled this auction")
+            setAuction((prev) => prev && { ...prev, status: "cancelled" })
         }
-    });
+    })
 
 
     if (!auction) {
         return <Spinner className="mx-auto mt-20 size-8" />;
     }
 
-    const placeBid = async (price) =>{ 
+    const placeBid = async (price) => {
 
-     await createBid(auction.id, price)
+        await createBid(auction.id, price)
     }
 
     const ended = auction.status === "ended" || auction.status === "cancelled"
@@ -139,11 +137,11 @@ export default function Auction() {
                             </div>
 
                             {!ended && <div className="mt-auto flex gap-3">
-                                <Button className="flex-1" onClick={() => setDialogOpen(true)}>
+                                <Button className="flex-1" onClick={() => { setBuyNow(false); setDialogOpen(true) }}>
                                     Place Bid
                                 </Button>
 
-                                <Button variant="outline" className="flex-1">
+                                <Button variant="outline" className="flex-1" onClick={() => { setBuyNow(true); setDialogOpen(true) }}>
                                     Buy Now
                                 </Button>
                             </div>}
@@ -153,7 +151,8 @@ export default function Auction() {
 
                 </CardContent>
             </Card>
-            <BidForm open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price} />
+            <BidForm key={buyNow?"buyNow":"bidPrice"} open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price}     buyNowPrice={buyNow ? auction.buy_now_price : undefined}
+ />
         </main>
     );
 }
