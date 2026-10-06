@@ -11,6 +11,7 @@ import ComponentScroller from '../ComponentScroller/ComponentScroller';
 import AuctionCard from '../AuctionCard/AuctionCard';
 import BidCard from '../BidCard/BidCard';
 import { Separator } from '../ui/separator';
+import { getApiError } from '@/lib/helpers/getApiError';
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);

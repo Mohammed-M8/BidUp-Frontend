@@ -15,11 +15,12 @@ const getAuctions = async (category_id = null, page = 1, pageSize = 12, search =
   return response.data
 }
 
-const getUserAuctions = async (user_id, page = 1, page_size = 10) => {
+const getUserAuctions = async (user_id, page = 1, page_size = 10,status=null) => {
   const response = await api.get(`/users/${user_id}/auctions`, {
     params: {
       page: page,
-      page_size: page_size
+      page_size: page_size,
+      status: status||undefined
     }
   })
   const data = response.data

@@ -1,39 +1,34 @@
-import { getAuctions } from "@/services/auctionService"
-import { useEffect, useState } from "react"
+import { UserContext } from "@/contexts/UserContext"
+import { getApiError } from "@/lib/helpers/getApiError"
+import { getUserAuctions } from "@/services/auctionService"
+import { useContext, useEffect, useState } from "react"
 import { useSearchParams } from "react-router"
 import { toast } from "react-toastify"
-import { Field } from "../ui/field"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import ComponentScroller from "../ComponentScroller/ComponentScroller"
 import { Spinner } from "../ui/spinner"
+import ComponentScroller from "../ComponentScroller/ComponentScroller"
 import AuctionBar from "../AuctionBar/AuctionBar"
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationNext,
-    PaginationPrevious,
-} from "../ui/pagination"
-import { getApiError } from "@/lib/helpers/getApiError"
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "../ui/pagination"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
-export default function Auctions() {
-    const [searchParams] = useSearchParams()
-    const categoryId=searchParams.get("category_id")
-
+export default function MyAuctions() {
+    const { user } = useContext(UserContext)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const status = searchParams.get("status")
     const [auctions, setAuctions] = useState([])
     const [page, setPage] = useState(1)
     const [pages, setPages] = useState(0)
-    const [searchInput, setSearchInput] = useState("")
-    const [search, setSearch] = useState("")
     const [loading, setLoading] = useState(true)
-
-
+    const items = [
+        { label: 'All', value: '' },
+        { label: "Active", value: 'active' },
+        { label: "Cancelled", value: 'cancelled' },
+        { label: "Ended", value: 'ended' }
+    ]
     useEffect(() => {
         const getData = async () => {
             setLoading(true)
             try {
-                const data = await getAuctions(categoryId, page, 12, search)
+                const data = await getUserAuctions(user.sub, page, 12, status)
                 setAuctions(data.items)
                 setPages(data.pages)
             } catch (error) {
@@ -44,13 +39,8 @@ export default function Auctions() {
         }
 
         getData()
-    }, [categoryId, page, search])
 
-    const handleSearch = (evt) => {
-        evt.preventDefault()
-        setSearch(searchInput.trim())
-        setPage(1)
-    }
+    }, [page, status, user])
 
     const goTo = (evt, target) => {
         evt.preventDefault()
@@ -59,20 +49,31 @@ export default function Auctions() {
 
     return (
         <main className="space-y-4 px-4 py-4">
-            <h1 className="text-5xl">Search Auctions</h1>
+            <div className="flex flex-row items-center gap-4">
+                <h1 className="text-5xl">Your Auctions</h1>
 
-            <form onSubmit={handleSearch}>
-                <Field className="my-2" orientation="horizontal">
-                    <Input
-                        type="search"
-                        placeholder="Search..."
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                    />
-                    <Button type="submit">Search</Button>
-                </Field>
-            </form>
+                <Select
+                    value={status || ""}
+                    onValueChange={(value) => {
+                        setSearchParams(value ? { status: value } : {})
+                        setPage(1)
+                    }}
+                >
+                    <SelectTrigger className="w-45">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
 
+                    <SelectContent>
+                        <SelectGroup>
+                            {items.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
             {loading ? (
                 <Spinner className="mx-auto mt-20 size-8" />
             ) : auctions.length === 0 ? (
@@ -108,6 +109,8 @@ export default function Auctions() {
                     </PaginationContent>
                 </Pagination>
             )}
+
         </main>
+
     )
 }
