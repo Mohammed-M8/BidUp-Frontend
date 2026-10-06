@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import * as AuctionService from "../../services/auctionService";
@@ -11,11 +11,19 @@ import { BidForm } from "../BidForm/BidForm";
 import { createBid } from "@/services/bidService";
 import ComponentScroller from "../ComponentScroller/ComponentScroller";
 import BidBar from "../BidBar/BidBar";
+import { UserContext } from "@/contexts/UserContext";
+import { AcceptForm } from "../AcceptForm/AcceptForm";
+import { CancelForm } from "../CancelForm/CancelForm";
+import { getApiError } from "@/lib/helpers/getApiError";
 
 export default function Auction() {
+
+    const { user } = useContext(UserContext)
     const { auctionId } = useParams();
     const [auction, setAuction] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [cancelOpen, setCancelOpen] = useState(false)
+    const [bidToAccept, setBidToAccept] = useState(null)
     const [buyNow, setBuyNow] = useState(false)
     const [bids, setBids] = useState([])
 
@@ -25,7 +33,7 @@ export default function Auction() {
                 const data = await AuctionService.getAuction(auctionId);
                 setAuction(data);
             } catch (error) {
-                toast.error(error.message);
+                toast.error(getApiError(error));
             }
         }
 
@@ -38,7 +46,7 @@ export default function Auction() {
                 const data = await BidService.getAuctionBids(auctionId)
                 setBids(data.items)
             } catch (error) {
-                toast.error(error.message)
+                toast.error(getApiError(error))
             }
         }
         getBids()
@@ -66,6 +74,9 @@ export default function Auction() {
         } else if (message.type === "auction_cancelled") {
             toast.error("The seller cancelled this auction")
             setAuction((prev) => prev && { ...prev, status: "cancelled" })
+        } else if (message.type === "bid_accepted") {
+            toast.success(`Seller accepted ${message.bidder.username}'s bid of BD ${message.price}`)
+            setAuction((prev) => prev && { ...prev, status: "ended" })
         }
     })
 
@@ -74,9 +85,35 @@ export default function Auction() {
         return <Spinner className="mx-auto mt-20 size-8" />;
     }
 
-    const placeBid = async (price) => {
+    const isSeller = user && Number(user.sub) === auction.seller_id
 
-        await createBid(auction.id, price)
+    const acceptBid = async () => {
+        try {
+            await BidService.acceptBid(bidToAccept.id)
+            setBidToAccept(null)
+        } catch (error) {
+            toast.error(getApiError(error))
+        }
+    }
+
+    const placeBid = async (price) => {
+        try {
+            await createBid(auction.id, price)
+
+        } catch (error) {
+            toast.error(getApiError(error))
+
+        }
+    }
+
+    const handleCancel = async (reason) => {
+        try {
+            await AuctionService.cancelAuction(auction.id, reason)
+        } catch (error) {
+            toast.error(getApiError(error))
+        } finally {
+            setCancelOpen(false)
+        }
     }
 
     const ended = auction.status === "ended" || auction.status === "cancelled"
@@ -160,7 +197,7 @@ export default function Auction() {
                                 </div>
                             </div>
 
-                            {!ended && <div className="mt-auto flex gap-3">
+                            {!ended && !isSeller ? <div className="mt-auto flex gap-3">
                                 <Button className="flex-1" onClick={() => { setBuyNow(false); setDialogOpen(true) }}>
                                     Place Bid
                                 </Button>
@@ -168,7 +205,14 @@ export default function Auction() {
                                 <Button variant="outline" className="flex-1" onClick={() => { setBuyNow(true); setDialogOpen(true) }}>
                                     Buy Now
                                 </Button>
-                            </div>}
+                            </div> : isSeller && !ended ? (
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => setCancelOpen(true)}
+                                >
+                                    Cancel Auction
+                                </Button>
+                            ) : null}
 
                         </CardContent>
                     </Card>
@@ -183,13 +227,24 @@ export default function Auction() {
                 ) : (
                     <ComponentScroller orientation="vertical">
                         {bids.map((bid, i) => (
-                            <BidBar key={bid.id} bid={bid} isTop={i === 0} />
+                            <BidBar
+                                key={bid.id}
+                                bid={bid}
+                                isTop={i === 0}
+                                onAccept={isSeller && !ended && i === 0 ? () => setBidToAccept(bid) : undefined} />
                         ))}
                     </ComponentScroller>
                 )}
             </section>
             <BidForm key={buyNow ? "buyNow" : "bidPrice"} open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={placeBid} minPrice={auction.current_price} buyNowPrice={buyNow ? auction.buy_now_price : undefined}
             />
+            <AcceptForm
+                open={bidToAccept !== null}
+                onOpenChange={(open) => { if (!open) setBidToAccept(null) }}
+                bid={bidToAccept}
+                onConfirm={acceptBid}
+            />
+            <CancelForm open={cancelOpen} onOpenChange={setCancelOpen} onConfirm={handleCancel} />
         </main>
     );
 }

@@ -28,5 +28,9 @@ const getAuctionBids = async (auction_id) => {
   return data
 }
 
+const acceptBid = async (bid_id) => {
+  const response = await api.post(`/bids/${bid_id}/accept`)
+  return response.data
+}
 
-export { getUserBids, createBid, getAuctionBids }
+export { getUserBids, createBid, getAuctionBids,acceptBid }

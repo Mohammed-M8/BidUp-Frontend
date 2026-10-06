@@ -11,6 +11,7 @@ import {
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { getApiError } from "@/lib/helpers/getApiError"
 import { useState } from "react"
 import { toast } from "react-toastify"
 
@@ -24,7 +25,7 @@ export function BidForm({ open, onOpenChange, onSubmit, minPrice, buyNowPrice })
             setPrice("")
             onOpenChange(false)
         } catch (error) {
-            toast.error(error.message)
+            toast.error(getApiError(error))
         }
     }
 

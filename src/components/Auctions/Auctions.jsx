@@ -15,6 +15,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "../ui/pagination"
+import { getApiError } from "@/lib/helpers/getApiError"
 
 export default function Auctions() {
     const { categoryId } = useParams()
@@ -35,7 +36,7 @@ export default function Auctions() {
                 setAuctions(data.items)
                 setPages(data.pages)
             } catch (error) {
-                toast.error(error.message)
+                toast.error(getApiError(error))
             } finally {
                 setLoading(false)
             }

@@ -36,7 +36,7 @@ const Dashboard = () => {
         const data = await AuctionsService.getUserAuctions(user.sub, 1, 10)
         setAuctions(data)
       } catch (error) {
-        toast.error(error.message)
+        toast.error(getApiError(error))
       }
     }
 
@@ -50,7 +50,7 @@ const Dashboard = () => {
         const data = await BidsService.getUserBids(user.sub, 1, 10)
         setBids(data)
       } catch (error) {
-        toast.error(error.message)
+        toast.error(getApiError(error))
       }
     }
 
