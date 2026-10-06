@@ -9,6 +9,7 @@ import ComponentScroller from "../ComponentScroller/ComponentScroller"
 import BidBar from "../BidBar/BidBar"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useSearchParams } from "react-router"
+import Breadcrumbs from "../BreadCrumb/BreadCrumb"
 
 export default function MyBids() {
     const { user } = useContext(UserContext)
@@ -24,7 +25,7 @@ export default function MyBids() {
         const getData = async () => {
             setLoading(true)
             try {
-                const data = await getUserBids(user.sub, page, 12,status)
+                const data = await getUserBids(user.sub, page, 12, status)
                 setBids(data.items)
                 setPages(data.pages)
             } catch (error) {
@@ -34,7 +35,7 @@ export default function MyBids() {
             }
         }
         getData()
-    }, [user, page,status])
+    }, [user, page, status])
 
     const goTo = (evt, target) => {
         evt.preventDefault()
@@ -48,6 +49,12 @@ export default function MyBids() {
 
     return (
         <main className="space-y-4 px-4 py-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "My Bids" },
+                ]}
+            />
             <div className="flex flex-row items-center gap-4">
                 <h1 className="text-3xl">Your Bids</h1>
 

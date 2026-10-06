@@ -16,6 +16,7 @@ import { AcceptForm } from "../AcceptForm/AcceptForm";
 import { CancelForm } from "../CancelForm/CancelForm";
 import { getApiError } from "@/lib/helpers/getApiError";
 import { EditAuctionForm } from "../EditAuctionForm/EditAuctionForm";
+import Breadcrumbs from "../BreadCrumb/BreadCrumb";
 
 export default function Auction() {
 
@@ -128,6 +129,13 @@ export default function Auction() {
 
     return (
         <main className="px-4 py-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "Auctions", href: "/auctions" },
+                    { label: auction.product_name },
+                ]}
+            />
             <h1 className="text-2xl">View Auction</h1>
 
             <Card className="relative mx-auto mt-4 max-w-6xl">

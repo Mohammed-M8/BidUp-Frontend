@@ -16,10 +16,11 @@ import {
     PaginationPrevious,
 } from "../ui/pagination"
 import { getApiError } from "@/lib/helpers/getApiError"
+import Breadcrumbs from "../BreadCrumb/BreadCrumb"
 
 export default function Auctions() {
     const [searchParams] = useSearchParams()
-    const categoryId=searchParams.get("category_id")
+    const categoryId = searchParams.get("category_id")
 
     const [auctions, setAuctions] = useState([])
     const [page, setPage] = useState(1)
@@ -59,6 +60,12 @@ export default function Auctions() {
 
     return (
         <main className="space-y-4 px-4 py-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "Auctions", href: "/auctions" },
+                ]}
+            />
             <h1 className="text-3xl">Search Auctions</h1>
 
             <form onSubmit={handleSearch}>

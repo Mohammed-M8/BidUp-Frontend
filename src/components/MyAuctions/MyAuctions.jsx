@@ -11,6 +11,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationNext, Paginati
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Button } from "../ui/button"
 import { AuctionForm } from "../AuctionForm/AuctionForm"
+import Breadcrumbs from "../BreadCrumb/BreadCrumb"
 
 export default function MyAuctions() {
     const { user } = useContext(UserContext)
@@ -60,6 +61,12 @@ export default function MyAuctions() {
 
     return (
         <main className="space-y-4 px-4 py-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "My Auctions", href: "/my/auctions" },
+                ]}
+            />
             <div className="flex flex-row items-center gap-4">
                 <h1 className="text-3xl">Your Auctions</h1>
 
