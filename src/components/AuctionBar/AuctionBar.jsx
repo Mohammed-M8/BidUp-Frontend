@@ -34,20 +34,37 @@ export default function AuctionBar({ auction }) {
     return (
         <Link to={`/auctions/${auction.id}`} className="block w-full">
             <Card className="flex-row items-center gap-4 overflow-hidden py-0 transition-colors hover:bg-muted/50">
-                <div className="flex items-center gap-2">
-                    <h3 className="truncate font-medium">{auction.product_name}</h3>
-                    {isNew && <Badge className="shrink-0">New</Badge>}
-                    {!isActive && (
-                        <Badge
-                            variant={statusVariants[auction.status] ?? "outline"}
-                            className="shrink-0 capitalize"
-                        >
-                            {auction.status}
-                        </Badge>
-                    )}
+                <img
+                    src={auction.image_url}
+                    alt={auction.product_name}
+                    className="size-24 shrink-0 object-contain sm:size-28"
+                />
+
+                <div className="min-w-0 flex-1 py-2">
+                    <div className="flex items-center gap-2">
+                        <h3 className="truncate font-medium">{auction.product_name}</h3>
+                        {isNew && <Badge className="shrink-0">New</Badge>}
+                        {!isActive && (
+                            <Badge
+                                variant={statusVariants[auction.status] ?? "outline"}
+                                className="shrink-0 capitalize"
+                            >
+                                {auction.status}
+                            </Badge>
+                        )}
+                    </div>
+
+                    <p className="line-clamp-2 text-sm text-muted-foreground">
+                        {auction.product_description}
+                    </p>
+
+                    <p className="mt-1 truncate text-xs text-muted-foreground">
+                        {auction.category?.name}
+                        {auction.category && auction.seller && " · "}
+                        {auction.seller && `by ${auction.seller.username}`}
+                    </p>
                 </div>
 
-                {/* right column */}
                 <div className="shrink-0 pr-4 text-right">
                     <p className="text-xs text-muted-foreground">{priceLabel}</p>
                     <p className="text-lg font-semibold">BD {auction.current_price}</p>
