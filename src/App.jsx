@@ -14,6 +14,7 @@ import Auction from './components/Auction/Auction';
 import Auctions from './components/Auctions/Auctions';
 import MyAuctions from './components/MyAuctions/MyAuctions';
 import MyBids from './components/MyBids/MyBids';
+import NotFound from './components/NotFound/NotFound';
 
 const App = () => {
   const { user } = useContext(UserContext)
@@ -26,7 +27,7 @@ const App = () => {
           <Route path='/' element={<Dashboard />} />
           <Route path='my'>
             <Route path='auctions' element={<MyAuctions />} />
-            <Route path='bids' element={<MyBids/>}/>
+            <Route path='bids' element={<MyBids />} />
           </Route>
           <Route path='auctions'>
             <Route index element={<Auctions />} />
@@ -38,6 +39,8 @@ const App = () => {
           <Route path='/sign-up' element={<SignUpForm />} />
           <Route path='/sign-in' element={<SignInForm />} />
         </Routes>}
+      <Route path="*" element={<NotFound />} />
+
     </>
   );
 };
