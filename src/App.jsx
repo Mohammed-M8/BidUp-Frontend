@@ -33,13 +33,14 @@ const App = () => {
             <Route index element={<Auctions />} />
             <Route path=':auctionId' element={<Auction />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
         : <Routes>
           <Route path='/' element={<Landing />} />
           <Route path='/sign-up' element={<SignUpForm />} />
           <Route path='/sign-in' element={<SignInForm />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>}
-      <Route path="*" element={<NotFound />} />
 
     </>
   );
