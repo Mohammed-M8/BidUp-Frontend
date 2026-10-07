@@ -14,6 +14,7 @@ import { Separator } from '../ui/separator';
 import { getApiError } from '@/lib/helpers/getApiError';
 import StatsCards from './StatsCards';
 import BidsChart from './BidsChart';
+import LiveAuctions from '../LiveAuctions/LiveAuctions';
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -101,6 +102,10 @@ const Dashboard = () => {
           </ComponentScroller>
         </CardContent>
       </Card>
+
+      <Separator />
+      <h1 className="text-2xl">Live Auctions</h1>
+      <LiveAuctions limit={8} heightClass="h-80" />
     </main>
   );
 };
