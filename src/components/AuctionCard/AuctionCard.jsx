@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
-import { auctionStatusVariants } from "@/lib/helpers/statusVariants";
+import { statusVariants } from "@/lib/helpers/statusVariants";
 
 const AuctionCard = ({ auction }) => (
   <Link to={`/auctions/${auction.id}`} className="shrink-0">
@@ -14,7 +14,7 @@ const AuctionCard = ({ auction }) => (
 
       {auction.status !== "active" && (
         <Badge
-          variant={auctionStatusVariants[auction.status] ?? "outline"}
+          variant={statusVariants[auction.status] ?? "outline"}
           className="absolute left-2 top-2 capitalize"
         >
           {auction.status}

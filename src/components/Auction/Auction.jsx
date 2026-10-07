@@ -131,7 +131,7 @@ export default function Auction() {
         toast.success("Auction updated")
     }
 
-    const ended = auction.status === "ended" || auction.status === "cancelled"
+    const ended = auction.status === "ended" || auction.status === "cancelled"||auction.status=="sold"
 
     return (
         <main className="px-4 py-4">

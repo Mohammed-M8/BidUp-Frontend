@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
-import { useNow } from "../../../hooks/useNow"; // wherever you saved it
-import { auctionStatusVariants } from "@/lib/helpers/statusVariants";
+import { useNow } from "../../../hooks/useNow";
+import { statusVariants } from "@/lib/helpers/statusVariants";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
@@ -39,7 +39,7 @@ export default function AuctionBar({ auction }) {
                     {isNew && <Badge className="shrink-0">New</Badge>}
                     {!isActive && (
                         <Badge
-                            variant={auctionStatusVariants[auction.status] ?? "outline"}
+                            variant={statusVariants[auction.status] ?? "outline"}
                             className="shrink-0 capitalize"
                         >
                             {auction.status}
