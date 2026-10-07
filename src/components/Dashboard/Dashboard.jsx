@@ -12,6 +12,8 @@ import AuctionCard from '../AuctionCard/AuctionCard';
 import BidCard from '../BidCard/BidCard';
 import { Separator } from '../ui/separator';
 import { getApiError } from '@/lib/helpers/getApiError';
+import StatsCards from './StatsCards';
+import BidsChart from './BidsChart';
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -62,6 +64,8 @@ const Dashboard = () => {
     <main className="space-y-4 px-4 py-4">
       <h1 className='text-3xl'>Dashboard</h1>
       <Separator />
+      <StatsCards auctions={auctions} bids={bids} />
+      <BidsChart bids={bids} />
       <h1 className="text-2xl">Your Auctions</h1>
       <Card className="min-w-0">
         <CardHeader className="flex flex-row items-center justify-between">

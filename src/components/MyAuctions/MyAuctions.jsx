@@ -27,8 +27,9 @@ export default function MyAuctions() {
     const items = [
         { label: 'All', value: '' },
         { label: "Active", value: 'active' },
+        { label: "Sold", value: 'sold' },
+        { label: "Unsold", value: 'ended' },
         { label: "Cancelled", value: 'cancelled' },
-        { label: "Ended", value: 'ended' }
     ]
     useEffect(() => {
         const getData = async () => {

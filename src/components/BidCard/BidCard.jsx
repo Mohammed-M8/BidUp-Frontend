@@ -3,12 +3,13 @@ import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 
 const BADGES = {
-  leading:   { label: "Leading",   className: "bg-green-600 text-white hover:bg-green-600" },
-  won:       { label: "Won",       className: "bg-green-600 text-white hover:bg-green-600" },
-  outbid:    { label: "Outbid",    variant: "destructive" },
-  lost:      { label: "Lost",      variant: "destructive" },
+  leading: { label: "Leading", variant: "success" },
+  won: { label: "Won", variant: "success" },
+  outbid: { label: "Outbid", variant: "destructive" },
+  lost: { label: "Lost", variant: "destructive" },
   cancelled: { label: "Cancelled", variant: "outline" },
 };
+
 
 const BidCard = ({ bid }) => {
   const { auction } = bid;

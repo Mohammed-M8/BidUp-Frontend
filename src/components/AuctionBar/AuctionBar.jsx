@@ -1,12 +1,14 @@
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
+import { useNow } from "../../../hooks/useNow"; // wherever you saved it
+import { auctionStatusVariants } from "@/lib/helpers/statusVariants";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
 
-const timeLeft = (endDate) => {
-    const ms = new Date(endDate) - new Date();
+const timeLeft = (endDate, now) => {
+    const ms = new Date(endDate).getTime() - now;
     if (ms <= 0) return "Ended";
     const mins = Math.floor(ms / 60000);
     const days = Math.floor(mins / 1440);
@@ -17,52 +19,50 @@ const timeLeft = (endDate) => {
 };
 
 export default function AuctionBar({ auction }) {
-    const msLeft = new Date(auction.end_date) - new Date();
-    const urgent = msLeft > 0 && msLeft < HOUR_MS;
-    const isNew = new Date() - new Date(auction.created_at) < DAY_MS;
+    const now = useNow(60_000);
+
+    const isActive = auction.status === "active";
+    const isSold = auction.status === "sold";
+    const msLeft = new Date(auction.end_date).getTime() - now;
+    const urgent = isActive && msLeft > 0 && msLeft < HOUR_MS;
+    const isNew = isActive && now - new Date(auction.created_at).getTime() < DAY_MS;
     const hasBids = auction.current_price > auction.starting_price;
+
+    const priceLabel = isSold ? "Sold for" : hasBids ? "Current bid" : "Starting price";
+    const footer = isActive ? timeLeft(auction.end_date, now) : null;
 
     return (
         <Link to={`/auctions/${auction.id}`} className="block w-full">
             <Card className="flex-row items-center gap-4 overflow-hidden py-0 transition-colors hover:bg-muted/50">
-                <img
-                    src={auction.image_url}
-                    alt={auction.product_name}
-                    className="size-24 shrink-0 object-contain sm:size-28"
-                />
-
-                <div className="min-w-0 flex-1 py-2">
-                    <div className="flex items-center gap-2">
-                        <h3 className="truncate font-medium">{auction.product_name}</h3>
-                        {isNew && <Badge className="shrink-0">New</Badge>}
-                    </div>
-
-                    <p className="line-clamp-2 text-sm text-muted-foreground">
-                        {auction.product_description}
-                    </p>
-
-                    <p className="mt-1 truncate text-xs text-muted-foreground">
-                        {auction.category?.name}
-                        {auction.category && auction.seller && " · "}
-                        {auction.seller && `by ${auction.seller.username}`}
-                    </p>
+                <div className="flex items-center gap-2">
+                    <h3 className="truncate font-medium">{auction.product_name}</h3>
+                    {isNew && <Badge className="shrink-0">New</Badge>}
+                    {!isActive && (
+                        <Badge
+                            variant={auctionStatusVariants[auction.status] ?? "outline"}
+                            className="shrink-0 capitalize"
+                        >
+                            {auction.status}
+                        </Badge>
+                    )}
                 </div>
 
+                {/* right column */}
                 <div className="shrink-0 pr-4 text-right">
-                    <p className="text-xs text-muted-foreground">
-                        {hasBids ? "Current bid" : "Starting price"}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{priceLabel}</p>
                     <p className="text-lg font-semibold">BD {auction.current_price}</p>
 
-                    {auction.buy_now_price != null && (
+                    {isActive && auction.buy_now_price != null && (
                         <p className="text-xs text-muted-foreground">
                             Buy now BD {auction.buy_now_price}
                         </p>
                     )}
 
-                    <p className={`text-xs ${urgent ? "font-medium text-destructive" : "text-muted-foreground"}`}>
-                        {timeLeft(auction.end_date)}
-                    </p>
+                    {footer && (
+                        <p className={`text-xs ${urgent ? "font-medium text-destructive" : "text-muted-foreground"}`}>
+                            {footer}
+                        </p>
+                    )}
                 </div>
             </Card>
         </Link>

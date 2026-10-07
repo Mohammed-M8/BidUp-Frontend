@@ -17,6 +17,10 @@ import { CancelForm } from "../CancelForm/CancelForm";
 import { getApiError } from "@/lib/helpers/getApiError";
 import { EditAuctionForm } from "../EditAuctionForm/EditAuctionForm";
 import Breadcrumbs from "../BreadCrumb/BreadCrumb";
+import { Badge } from "../ui/badge";
+import { statusVariants } from "@/lib/helpers/statusVariants";
+
+
 
 export default function Auction() {
 
@@ -88,6 +92,8 @@ export default function Auction() {
         return <Spinner className="mx-auto mt-20 size-8" />;
     }
 
+    const winner = auction.status === "ended" ? bids[0] : null
+
     const isSeller = user && Number(user.sub) === auction.seller_id
 
     const acceptBid = async () => {
@@ -153,9 +159,9 @@ export default function Auction() {
                     </div>
 
                     <Card className="relative flex-1">
-                        <span className="absolute right-6 top-6 rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                        <Badge variant={statusVariants[auction.status] ?? "outline"} className="absolute right-6 top-6 capitalize">
                             {auction.status}
-                        </span>
+                        </Badge>
                         <CardContent className="flex h-full flex-col gap-5 p-6">
 
                             <div>
@@ -196,6 +202,11 @@ export default function Auction() {
                                     BD {auction.current_price}
                                 </p>
                             </div>
+                            {auction.status === "ended" && (
+                                winner
+                                    ? <p className="font-medium">Sold to {winner.bidder?.username} for BD {winner.price}</p>
+                                    : <p className="text-muted-foreground">Ended with no bids</p>
+                            )}
 
                             <div className="flex gap-8">
                                 <div>
